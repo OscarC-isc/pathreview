@@ -17,3 +17,17 @@ relevant files:
 **Setup confirmation:** [X] App runs locally at localhost:5173
 
 **Cohort ledger:** [X] Issue added to cohort ledger
+
+## Week 8 — Reproduction & solution planning
+
+**Reproduction commit link:** [link to commit documenting the reproduced issue]
+
+**Reproduction summary:**
+Starting up the app and using as many possible functions as possible.
+
+**PLAN.md link:** [PLAN.md]
+
+**Walkthrough video (recommended):** [link to your Loom video, ≤2 min — shared for early feedback]
+
+**Blockers or open questions:**
+[Anything you're still uncertain about going into Week 9, or leave blank]
