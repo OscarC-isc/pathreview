@@ -1,15 +1,18 @@
 ## Week 7 — Issue selection
 
-**Issue link:** [https://github.com/jamjamgobambam/pathreview/issues/116](https://github.com/jamjamgobambam/pathreview/issues/116)
+**Issue link:** [https://github.com/ascherj/pathreview/issues/70](https://github.com/ascherj/pathreview/issues/70)
 
-**Issue title:** [SETUP.md is missing Docker Compose startup instructions for Windows users]
+**Issue title:** [Add rate limiting per IP address in addition to per user #70]
 
-**Tier:** [X] Tier 1  [ ] Tier 2  [ ] Tier 3
+**Tier:** [ ] Tier 1  [X] Tier 2  [ ] Tier 3
 
 **Problem summary:**
-Dockers setup instructions are limited to Mac and linux users. Windows specific setup instructions for docker is missing. a successful fix adds instructions for setting up docker for window users and adds potential FAQ for common troubleshooting issues. 
+Currently unauthenticated/public API requests are not rate limited at all. The current rate limiter limits requests only for authenticated user ids. This results in vulnerabilities against attacks. To fix this we add a per ip address rate limiter.
+relevant files: 
+- safety/rate_limiter.py
+- api/middleware/
 
-**Branch name:** docs/116-docker-windows-instructions
+**Branch name:** feat/70-ip-rate-limit
 
 **Setup confirmation:** [X] App runs locally at localhost:5173
 
