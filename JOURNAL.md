@@ -31,3 +31,34 @@ Starting up the app and using as many possible functions as possible.
 
 **Blockers or open questions:**
 [Anything you're still uncertain about going into Week 9, or leave blank]
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:**
+Confirmed via code review that `RateLimiter` (safety/rate_limiter.py) was never wired into the API at all — not for users, not for IPs. All 3 plan steps done: created `api/middleware/rate_limit.py` (`RateLimitMiddleware`), initialized a Redis-backed `RateLimiter` and registered the middleware in `api/main.py`, and added `ip_rate_limit_per_minute` alongside the existing `rate_limit_per_minute` in `core/config.py`.
+
+**Next steps:**
+implementation, tests, and lint.
+
+**Blockers:**
+None.
+
+---
+
+### Check-in 2 (end of week)
+
+**PR link:** [link to your submitted pull request]
+
+**Branch:** `feat/70-ip-rate-limit`
+
+**What you built:**
+Added `RateLimitMiddleware` to enforce rate limits on all incoming requests before they reach any route, applying a per-IP limit to every request and an additional per-user limit for authenticated requests with valid bearer tokens. This closes the gap where unauthenticated traffic was previously unprotected. The middleware excludes `/` and `/health`, and returns a 429 response with a `Retry-After` header when limits are exceeded. The existing `safety/rate_limiter.py` remains unchanged because it provides the framework-agnostic Redis rate-limiting mechanism, while the new `api/middleware/rate_limit.py` handles FastAPI-specific request integration, keeping responsibilities cleanly separated.
+
+**Tests added or updated:**
+`tests/unit/test_rate_limit_middleware.py` covers: unauthenticated requests checked against the IP limit, 429 + `Retry-After` when the IP limit is exceeded, authenticated requests checked against both IP and user limits, 429 when only the user limit is exceeded, invalid/malformed tokens falling back to IP-only (no crash), and excluded paths skipping rate limiting entirely.
+
+Mixing HTTP/FastAPI-specific logic into the generic Redis utility would couple it to the web framework unnecessarily. `safety/` already holds other framework-agnostic modules (e.g. `monitoring.py`), while `api/middleware/` is where the other request-handling glue lives (`request_id.py`, `auth.py`) — so the split follows the existing convention: `safety/` = policy/mechanism, `api/middleware/` = how it's wired into requests.
+
+**Self-review confirmation:** [X] make check passes (on touched files — repo-wide `make check` has pre-existing, unrelated lint/test failures) [X] make test-unit passes (on touched files — same pre-existing unrelated failures elsewhere in the suite)
