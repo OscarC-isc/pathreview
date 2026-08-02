@@ -62,3 +62,34 @@ Added `RateLimitMiddleware` to enforce rate limits on all incoming requests befo
 Mixing HTTP/FastAPI-specific logic into the generic Redis utility would couple it to the web framework unnecessarily. `safety/` already holds other framework-agnostic modules (e.g. `monitoring.py`), while `api/middleware/` is where the other request-handling glue lives (`request_id.py`, `auth.py`) — so the split follows the existing convention: `safety/` = policy/mechanism, `api/middleware/` = how it's wired into requests.
 
 **Self-review confirmation:** [X] make check passes (on touched files — repo-wide `make check` has pre-existing, unrelated lint/test failures) [X] make test-unit passes (on touched files — same pre-existing unrelated failures elsewhere in the suite)
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [X] Yes  [ ] No — still awaiting review
+- By ChatGPT
+**Summary of feedback:**
+PR is well-scoped, focused change that introduces per-IP rate limiting before authentication, with appropriate tests and documentation. However, some concerns regarding the duplicate rate limiter, verify the middleware ordering is intentional and documented, ensure client IP extraction is secure, and to confirm that limits and related behavior is configurable instead of being hardcoded. Finally to simplify the known issues section so reviewers can quickly understand the current repository state. 
+
+**How you responded:**
+Not yet addressed in code — still pending. Plan is to: (1) clarify in docs/comments why `safety/rate_limiter.py` and `api/middleware/rate_limit.py` aren't duplicates (mechanism vs. wiring, per the split noted in Week 9), (2) document the middleware ordering rationale in `api/main.py`, (3) review the client IP extraction logic (e.g. trusting `X-Forwarded-For` only from a configured trusted proxy) to avoid spoofing, (4) move the hardcoded limits into `core/config.py` settings if not already fully covered by `ip_rate_limit_per_minute`/`rate_limit_per_minute`, and (5) trim the known issues section for clarity.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+Knowing how to add to the existing repo without making changes that would conflict with other componenets unrelated to the issue.
+
+**What did you learn about working in a large codebase?**
+You don't understand or know every component that exists in the system and you don't necessarily need to. Its more important to grasp the surface level design and only understand the components you are working on and the components it affects.
+
+**How did AI tools help — and where did they fall short?**
+AI was really useful is pointing out what direction to go in for how to solve the problem and what topics to research in.
+
+**What would you do differently if you started over?**
+I would definitely change my planning so that I could be more efficient in focusing on how to solve my issue and how to tackle making changes to existing components vs making new components.
+
+**What are you most proud of from this module?**
+Fixing the issue and writing tests and documentation, it gave me the experience of working on a real repo.
